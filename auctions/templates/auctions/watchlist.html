@@ -1,0 +1,37 @@
+{% extends 'auctions/layout.html' %}
+{% block body %}
+ {% if message %}
+         <div class="alert alert-info" role="alert">
+        {{ message }}
+        </div>
+    {% endif %}
+    
+   <div class="card-group" style="height: 20px">
+  
+   {% for listing in listings %}
+  <div class="card" >
+  <p>
+     <div>
+    <a href="{% url 'remove_from_watchlist' listing.id %}" class="btn btn-primary" role="button">Remove from Watchlist</a>
+    </div>
+    </p>
+    <img src="{{listing.upload_image.url}}" class="card-img-top" alt="The image is unavailable">
+    <div class="card-body">
+      <h5 class="card-title">{{listing.title}}</h5>
+      <h4 class="card-title">{{listing.starting_bid}}</h4>
+      <p class="card-text">{{listing.description}}</p>
+    </div>
+    
+    <div class="card-footer">
+      <small class="text-muted">Date created: {{listing.date_made}}</small>
+    </div>
+   
+  </div>
+  {% empty %}
+  You haven't added anything to your watchlist yet.
+  {% endfor %}
+  
+
+</div>
+
+{% endblock %}

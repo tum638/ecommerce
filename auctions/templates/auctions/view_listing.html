@@ -1,0 +1,107 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+
+{% if listing %}
+{% if listing.is_active %}
+
+{% else %}
+
+{% if bid_winner %}
+  <div class="alert alert-success" role="alert">
+  <strong>{{ bid_winner}}</strong>, you have won this bid! congratulations!</strong>
+  </div> 
+{% endif %}
+
+{% endif %}
+
+{% if message %}
+ <div class="alert alert-info" role="alert">
+  {{ message }}
+</div>
+{% endif %}
+{% if listing.is_active %}
+<a class="btn btn-primary" href="{% url 'add_to_watchlist' listing.id %}" >Add to Watchlist</a>
+{% if flag %}
+<a class="btn btn-primary" href="{% url 'close_listing' listing.id %}" >Close the listing</a>
+{% endif %}
+{% else %}
+<div class="alert alert-info" role="alert">
+  This listing is no longer active.
+</div>
+
+{% endif %}
+
+
+
+
+<div class="card mb-3" width: >
+    <h2 class='card-title'>Listing: {{ listing.title}}</h2>
+  <img src="{{ listing.upload_image.url }}" class="card-img-top" alt="{{ listing.title }}" height='300'>
+  <div class="card-body">
+    <p class="card-text">{{ listing.description }}</p>
+    <p class="card-text"><small class="text-muted">Last updated: {{listing.date_made }}</small></p>
+    <h2>${{listing.starting_bid}}</h2>
+    <p><small> {{ count}} bid(s) have been made on this listing so far. </small></p>
+    <div class="form-floating mb-3">
+    <div>
+    {% if listing.is_active %}
+    <form action="{% url 'bid' listing.id %}" method='post'>
+      {% csrf_token %}
+      <p><input type="text" class="form-control" id="floatingInput" placeholder="Bid" name='bid'></p>
+      
+      <button type="submit" class="btn btn-primary mb-3">Place Bid</button>
+    </form>
+    {% else %}
+      <div class="alert alert-info" role="alert">
+        The listing is no longer active :(
+      </div>
+    {% endif %}
+
+    <h3>Details</h3>
+      <ul>
+        <li>Listed by: <strong> {{ listing.user }}</strong></li>
+        {% if listing.category %}
+        <li> Category: <strong>{{ listing.category }}</strong></li>
+        {% else %}
+        <li> Category: No category listed </li>
+        {% endif %}
+      </ul>
+    </div>
+
+</div>
+<div class="mb-3">
+  <form action="{% url 'add_comment' listing.id %}" method='post'>
+  {% csrf_token %}
+  <label for="exampleFormControlTextarea1" class="form-label">Enter your comment here.</label>
+  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='comment_text'></textarea>
+  <button type="submit" class="btn btn-secondary">Add comment</button>
+
+  </form>
+</div>
+
+{% else %}
+Something went wrong
+
+{% endif %}
+
+
+<div id="list-example" class="list-group">
+  <h1> Comments </h1>
+  {% for comment in comments %}
+  <a class="list-group-item list-group-item-action" href="#list-item-1">{{ comment.user.username }}</a>
+  {% endfor %}
+  
+</div>
+<div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+{% for comment in comments %}
+  <h4 id="list-item-{{comment.id}}">{{ comment.user.username }}</h4>
+  <p>{{ comment.comment_text }}</p>
+{% endfor %}
+  
+</div>
+
+
+
+{% endblock %}

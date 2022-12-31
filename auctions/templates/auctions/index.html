@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+
+
+
+{% block body %}
+    <h2>Active Listings</h2>
+{% if message %}
+  <div>{{message}}</div>
+{% endif %}
+{% for listing in all_listings %}
+    
+    <div class="card mb-3" style="max-width: 540px;">
+    {% if listing.is_active %}
+      {% else %}
+      <div class="alert alert-info" role="alert">
+      This listing is no longer active :(
+      {% endif %}
+    </div>
+  <div class="row g-0">
+    <div class="col-md-4">
+        <img src="{{ listing.upload_image.url }}" class="img-fluid rounded-start" alt="Picture not available">
+    </div>
+    <div  class="col-md-8"  >
+      <div class="card-body">
+        <h5 class="card-title">{{ listing.title }}</h5>
+        <p class="card-text">{{listing.description }}</p>
+        <p class="card-text"><strong>Price: ${{listing.starting_bid}}</strong></p>
+        <p class="card-text"><small class="text-muted"> Last edited on: {{ listing.date_made }}</small></p>
+        <a href="{% url 'view_listing' listing.id %}" class="btn btn-primary">Go to Listing</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+No listings yet!
+{% endfor %}
+
+
+
+    
+
+    
+{% endblock %}
